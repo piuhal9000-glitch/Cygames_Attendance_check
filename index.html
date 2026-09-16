@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#10251d" />
+  <title>싸이뮤직 방문 인증</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07110d;
+      --card: rgba(17, 38, 30, 0.88);
+      --line: rgba(205, 255, 228, 0.14);
+      --text: #f1fff7;
+      --muted: #a8c7b7;
+      --accent: #5ce59a;
+      --accent-dark: #163e2b;
+      --danger: #ff8f8f;
+      --warning: #ffd479;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(92, 229, 154, 0.18), transparent 30%),
+        radial-gradient(circle at 92% 88%, rgba(67, 144, 255, 0.13), transparent 34%),
+        var(--bg);
+    }
+
+    main {
+      width: min(100%, 520px);
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--card);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+      backdrop-filter: blur(18px);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 8vw, 46px);
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+    }
+
+    .lead {
+      margin: 16px 0 24px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .place {
+      display: grid;
+      gap: 5px;
+      margin-bottom: 22px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(7, 17, 13, 0.46);
+    }
+
+    .place span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .place strong { line-height: 1.45; }
+
+    .place a {
+      width: fit-content;
+      margin-top: 4px;
+      color: var(--accent);
+      font-size: 13px;
+      text-underline-offset: 3px;
+    }
+
+    label {
+      display: block;
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      margin-bottom: 14px;
+      padding: 15px 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      outline: none;
+      color: var(--text);
+      background: rgba(5, 13, 10, 0.74);
+      font: inherit;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(92, 229, 154, 0.12);
+    }
+
+    .consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 4px 0 18px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .consent input { margin-top: 3px; accent-color: var(--accent); }
+
+    button {
+      width: 100%;
+      min-height: 54px;
+      border: 0;
+      border-radius: 15px;
+      cursor: pointer;
+      color: #062012;
+      background: var(--accent);
+      font: inherit;
+      font-weight: 900;
+      transition: transform 160ms ease, opacity 160ms ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:disabled { cursor: wait; opacity: 0.58; transform: none; }
+
+    .status {
+      display: none;
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      line-height: 1.55;
+      background: rgba(5, 13, 10, 0.58);
+    }
+
+    .status.show { display: block; }
+    .status.success { border-color: rgba(92, 229, 154, 0.5); }
+    .status.error { border-color: rgba(255, 143, 143, 0.52); color: #ffd7d7; }
+    .status.warning { border-color: rgba(255, 212, 121, 0.48); color: #ffebbe; }
+
+    .meta {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Club Visit Check-in</p>
+    <h1>현장에서<br />방문을 인증하세요</h1>
+    <p class="lead">고려대학교 Google 계정으로 로그인한 뒤, 인증 지점 반경 250m 안에 있을 때만 공용 출석 기록에 저장합니다.</p>
+
+    <section class="place" aria-label="인증 장소">
+      <span>인증 장소</span>
+      <strong>싸이뮤직</strong>
+      <span>대전광역시 유성구 대학로155번길 29</span>
+      <a href="https://maps.google.com/?q=36.3621354,127.3505065" target="_blank" rel="noopener noreferrer">지도에서 보기</a>
+    </section>
+
+    <form id="checkinForm">
+      <label for="name">이름 또는 닉네임</label>
+      <input id="name" name="name" type="text" maxlength="30" autocomplete="name" placeholder="예: 홍길동" required />
+
+      <label class="consent">
+        <input id="consent" type="checkbox" required />
+        <span>korea.ac.kr 학교 계정 식별과 현재 위치 1회 확인에 동의합니다. 공용 DB에는 계정 식별자, 이름, 인증 장소, 서버 인증시간, 거리와 GPS 정확도만 저장되며 실제 좌표와 이메일은 저장하지 않습니다.</span>
+      </label>
+
+      <button id="checkinButton" type="submit">학교 Google 계정으로 방문 인증</button>
+    </form>
+
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+    <p class="meta">위치 권한과 HTTPS 연결이 필요합니다 · GPS 정확도 100m 이내만 허용</p>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import { getFirestore, doc, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    // Firebase 콘솔 > 프로젝트 설정 > 내 앱 > SDK 설정 및 구성에서 받은 값으로 교체하세요.
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGAq1vkaG94DukP2gC_RF8xzPzlGBdaEc",
+      authDomain: "cygame-a7769.firebaseapp.com",
+      projectId: "cygame-a7769",
+      storageBucket: "cygame-a7769.firebasestorage.app",
+      messagingSenderId: "899474745070",
+      appId: "1:899474745070:web:fc5935baa346c46e6075ff"
+    };
+
+    const CHECKIN = Object.freeze({
+      place: "싸이뮤직",
+      latitude: 36.3621354,
+      longitude: 127.3505065,
+      radiusMeters: 250,
+      maxAccuracyMeters: 100
+    });
+
+    const form = document.querySelector("#checkinForm");
+    const nameInput = document.querySelector("#name");
+    const button = document.querySelector("#checkinButton");
+    const statusBox = document.querySelector("#status");
+
+    let auth;
+    let db;
+    let googleProvider;
+    let firebaseReady = false;
+
+    function showStatus(message, type = "warning") {
+      statusBox.textContent = message;
+      statusBox.className = `status show ${type}`;
+    }
+
+    function setBusy(isBusy) {
+      button.disabled = isBusy;
+      button.textContent = isBusy ? "인증 절차를 진행하고 있어요…" : "학교 Google 계정으로 방문 인증";
+    }
+
+    function isConfigured() {
+      return Object.values(firebaseConfig).every((value) => value && !value.includes("YOUR_"));
+    }
+
+    function distanceMeters(lat1, lon1, lat2, lon2) {
+      const earthRadius = 6371000;
+      const toRadians = (degrees) => degrees * Math.PI / 180;
+      const dLat = toRadians(lat2 - lat1);
+      const dLon = toRadians(lon2 - lon1);
+      const a = Math.sin(dLat / 2) ** 2
+        + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2))
+        * Math.sin(dLon / 2) ** 2;
+      return 2 * earthRadius * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function getPosition() {
+      return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+          reject(new Error("이 브라우저는 위치 확인을 지원하지 않습니다."));
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
+        });
+      });
+    }
+
+    function koreaDateKey(date = new Date()) {
+      return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).format(date);
+    }
+
+    function positionErrorMessage(error) {
+      if (error?.code === 1) return "위치 권한이 거부되었습니다. 브라우저 설정에서 이 사이트의 위치 권한을 허용해 주세요.";
+      if (error?.code === 2) return "현재 위치를 확인할 수 없습니다. GPS와 Wi-Fi를 켠 뒤 다시 시도해 주세요.";
+      if (error?.code === 3) return "위치 확인 시간이 초과되었습니다. 야외나 창가에서 다시 시도해 주세요.";
+      return error?.message || "위치 확인 중 오류가 발생했습니다.";
+    }
+
+    if (isConfigured()) {
+      try {
+        const app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        googleProvider = new GoogleAuthProvider();
+        googleProvider.setCustomParameters({ hd: "korea.ac.kr", prompt: "select_account" });
+        db = getFirestore(app);
+        firebaseReady = true;
+      } catch (error) {
+        showStatus(`Firebase 초기화에 실패했습니다: ${error.message}`, "error");
+      }
+    } else {
+      showStatus("운영자가 Firebase 설정값을 입력해야 공용 DB 저장 기능을 사용할 수 있습니다.", "warning");
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const name = nameInput.value.trim();
+      if (!name) {
+        showStatus("이름 또는 닉네임을 입력해 주세요.", "error");
+        nameInput.focus();
+        return;
+      }
+
+      if (!firebaseReady) {
+        showStatus("Firebase 설정이 아직 완료되지 않았습니다. 운영자에게 알려 주세요.", "error");
+        return;
+      }
+
+      setBusy(true);
+      showStatus("Google 계정과 GPS 신호를 확인하고 있습니다.", "warning");
+
+      try {
+        const credential = auth.currentUser && !auth.currentUser.isAnonymous
+          ? { user: auth.currentUser }
+          : await signInWithPopup(auth, googleProvider);
+        const accountEmail = credential.user.email?.trim().toLowerCase() || "";
+
+        if (!credential.user.emailVerified || !accountEmail.endsWith("@korea.ac.kr")) {
+          await signOut(auth);
+          const schoolEmailError = new Error("@korea.ac.kr 학교 계정으로만 출석할 수 있습니다.");
+          schoolEmailError.code = "auth/invalid-school-email";
+          throw schoolEmailError;
+        }
+
+        const position = await getPosition();
+        const { latitude, longitude, accuracy } = position.coords;
+        const distance = Math.round(distanceMeters(latitude, longitude, CHECKIN.latitude, CHECKIN.longitude));
+        const roundedAccuracy = Math.round(accuracy);
+
+        if (roundedAccuracy > CHECKIN.maxAccuracyMeters) {
+          throw new Error(`GPS 정확도가 ${roundedAccuracy}m로 부족합니다. 정확도 100m 이내에서 다시 시도해 주세요.`);
+        }
+
+        if (distance > CHECKIN.radiusMeters) {
+          throw new Error(`인증 장소에서 약 ${distance.toLocaleString("ko-KR")}m 떨어져 있습니다. 반경 250m 안에서 시도해 주세요.`);
+        }
+
+        const uid = credential.user.uid;
+        const dateKey = koreaDateKey();
+        const recordRef = doc(db, "checkins", `${uid}_${dateKey}`);
+
+        await setDoc(recordRef, {
+          uid,
+          name,
+          place: CHECKIN.place,
+          checkedAt: serverTimestamp(),
+          distanceMeters: distance,
+          accuracyMeters: roundedAccuracy,
+          dateKey
+        });
+
+        localStorage.setItem("lastCheckin", JSON.stringify({ name, dateKey, distance }));
+        showStatus(`방문 인증이 완료되었습니다. 장소까지 약 ${distance}m · GPS 정확도 약 ${roundedAccuracy}m`, "success");
+        form.reset();
+      } catch (error) {
+        let message;
+        if (error?.code?.startsWith?.("permission-denied")) {
+          message = "이 Google 계정은 오늘 이미 인증했거나 DB 저장 권한이 없습니다.";
+        } else if (error?.code === "auth/popup-closed-by-user") {
+          message = "Google 로그인 창이 닫혔습니다. 다시 시도해 주세요.";
+        } else if (error?.code === "auth/unauthorized-domain") {
+          message = "현재 사이트 주소가 Firebase 승인 도메인에 등록되지 않았습니다. 운영자에게 알려 주세요.";
+        } else if (error?.code === "auth/operation-not-allowed") {
+          message = "Firebase에서 Google 로그인이 아직 활성화되지 않았습니다.";
+        } else if (error?.code === "auth/invalid-school-email") {
+          message = "@korea.ac.kr 학교 계정으로만 출석할 수 있습니다.";
+        } else {
+          message = positionErrorMessage(error);
+        }
+        showStatus(message, "error");
+      } finally {
+        setBusy(false);
+      }
+    });
+  </script>
+</body>
+</html>
