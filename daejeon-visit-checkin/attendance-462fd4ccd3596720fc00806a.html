@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#10251d" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <title>싸이뮤직 출석 명단</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07110d;
+      --card: rgba(17, 38, 30, 0.9);
+      --line: rgba(205, 255, 228, 0.14);
+      --text: #f1fff7;
+      --muted: #a8c7b7;
+      --accent: #5ce59a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(92, 229, 154, 0.17), transparent 30%),
+        radial-gradient(circle at 92% 88%, rgba(67, 144, 255, 0.12), transparent 34%),
+        var(--bg);
+    }
+    main {
+      width: min(100%, 920px);
+      margin: 0 auto;
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--card);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+      backdrop-filter: blur(18px);
+    }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 7vw, 44px);
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+    .lead { margin: 14px 0 24px; color: var(--muted); line-height: 1.6; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    button {
+      min-height: 46px;
+      padding: 0 17px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--text);
+      background: rgba(5, 13, 10, 0.7);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 160ms ease, opacity 160ms ease, border-color 160ms ease;
+    }
+    button.primary { border-color: transparent; color: #062012; background: var(--accent); }
+    button:hover { transform: translateY(-1px); border-color: var(--accent); }
+    button:disabled { cursor: not-allowed; opacity: 0.48; transform: none; }
+    .status {
+      margin: 0 0 18px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+      background: rgba(5, 13, 10, 0.58);
+    }
+    .status.error { border-color: rgba(255, 156, 156, 0.52); color: #ffd7d7; }
+    .status.success { border-color: rgba(92, 229, 154, 0.5); color: var(--text); }
+    .summary {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 12px;
+    }
+    .summary strong { font-size: 18px; }
+    .summary span { color: var(--muted); font-size: 13px; }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(5, 13, 10, 0.45);
+    }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th, td {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+    th { color: var(--muted); font-size: 13px; font-weight: 800; }
+    td { font-size: 15px; }
+    tr:last-child td { border-bottom: 0; }
+    th:first-child, td:first-child { width: 58%; }
+    .empty { padding: 38px 18px; color: var(--muted); text-align: center; }
+    [hidden] { display: none !important; }
+    @media (max-width: 600px) {
+      body { padding: 14px; }
+      main { padding: 21px 17px; border-radius: 21px; }
+      .toolbar { display: grid; grid-template-columns: 1fr 1fr; }
+      th, td { padding: 14px 12px; }
+      th:first-child, td:first-child { width: 62%; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Attendance List</p>
+    <h1>싸이뮤직 출석 명단</h1>
+    <p class="lead">인증 기록을 최신순으로 확인하고 CSV 파일로 내려받을 수 있습니다.</p>
+
+    <div class="toolbar">
+      <button id="refreshButton" class="primary" type="button">새로고침</button>
+      <button id="csvButton" type="button" disabled>CSV 내보내기</button>
+    </div>
+
+    <div id="status" class="status" role="status" aria-live="polite">출석 기록을 불러오고 있습니다.</div>
+
+    <section aria-label="출석 기록">
+      <div class="summary">
+        <strong>출석 명단</strong>
+        <span id="recordCount">총 0명</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">인증시간</th>
+              <th scope="col">이름</th>
+            </tr>
+          </thead>
+          <tbody id="recordsBody"></tbody>
+        </table>
+        <div id="emptyState" class="empty" hidden>저장된 출석 기록이 없습니다.</div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { collection, getDocs, getFirestore, orderBy, query } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGAq1vkaG94DukP2gC_RF8xzPzlGBdaEc",
+      authDomain: "cygame-a7769.firebaseapp.com",
+      projectId: "cygame-a7769",
+      storageBucket: "cygame-a7769.firebasestorage.app",
+      messagingSenderId: "899474745070",
+      appId: "1:899474745070:web:fc5935baa346c46e6075ff"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const refreshButton = document.querySelector("#refreshButton");
+    const csvButton = document.querySelector("#csvButton");
+    const statusBox = document.querySelector("#status");
+    const recordsBody = document.querySelector("#recordsBody");
+    const recordCount = document.querySelector("#recordCount");
+    const emptyState = document.querySelector("#emptyState");
+    let records = [];
+
+    function setStatus(message, type = "") {
+      statusBox.textContent = message;
+      statusBox.className = "status" + (type ? " " + type : "");
+    }
+
+    function dateParts(date) {
+      const parts = new Intl.DateTimeFormat("ko-KR", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23"
+      }).formatToParts(date);
+      return Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+    }
+
+    function displayTime(date) {
+      const part = dateParts(date);
+      return Number(part.month) + "월 " + Number(part.day) + "일 " + part.hour + ":" + part.minute;
+    }
+
+    function csvTime(date) {
+      const part = dateParts(date);
+      return part.year + "-" + part.month + "-" + part.day + " " + part.hour + ":" + part.minute + ":" + part.second;
+    }
+
+    function renderRecords() {
+      recordsBody.replaceChildren();
+      for (const record of records) {
+        const row = document.createElement("tr");
+        const timeCell = document.createElement("td");
+        const nameCell = document.createElement("td");
+        timeCell.textContent = displayTime(record.checkedAt);
+        nameCell.textContent = record.name;
+        row.append(timeCell, nameCell);
+        recordsBody.append(row);
+      }
+      recordCount.textContent = "총 " + records.length.toLocaleString("ko-KR") + "명";
+      emptyState.hidden = records.length !== 0;
+      csvButton.disabled = records.length === 0;
+    }
+
+    async function loadRecords() {
+      refreshButton.disabled = true;
+      csvButton.disabled = true;
+      setStatus("출석 기록을 불러오고 있습니다.");
+      try {
+        const attendanceQuery = query(
+          collection(db, "checkins"),
+          orderBy("checkedAt", "desc")
+        );
+        const snapshot = await getDocs(attendanceQuery);
+        records = snapshot.docs.flatMap((documentSnapshot) => {
+          const data = documentSnapshot.data();
+          const checkedAt = data.checkedAt?.toDate?.();
+          if (!checkedAt || typeof data.name !== "string") return [];
+          return [{ checkedAt, name: data.name }];
+        });
+        renderRecords();
+        setStatus("출석 기록 " + records.length.toLocaleString("ko-KR") + "건을 최신순으로 불러왔습니다.", "success");
+      } catch (error) {
+        console.error(error);
+        records = [];
+        renderRecords();
+        const message = error?.code === "permission-denied"
+          ? "조회 권한이 없습니다. 새 Firestore 규칙을 게시했는지 확인해 주세요."
+          : "출석 기록을 불러오지 못했습니다: " + error.message;
+        setStatus(message, "error");
+      } finally {
+        refreshButton.disabled = false;
+      }
+    }
+
+    function csvCell(value) {
+      let text = String(value ?? "");
+      if (/^[=+\-@]/.test(text)) text = "'" + text;
+      return '"' + text.replaceAll('"', '""') + '"';
+    }
+
+    function downloadCsv() {
+      if (records.length === 0) return;
+      const rows = [
+        ["인증시간", "이름"],
+        ...records.map((record) => [csvTime(record.checkedAt), record.name])
+      ];
+      const csv = "\uFEFF" + rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "싸이뮤직_출석기록_" + csvTime(new Date()).slice(0, 10) + ".csv";
+      document.body.append(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    refreshButton.addEventListener("click", loadRecords);
+    csvButton.addEventListener("click", downloadCsv);
+    loadRecords();
+  </script>
+</body>
+</html>
