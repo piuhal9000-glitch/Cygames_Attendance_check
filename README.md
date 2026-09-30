@@ -1,3 +1,4 @@
+[README.md](https://github.com/user-attachments/files/32857475/README.md)
 # 싸이뮤직 방문 인증 웹앱
 
 인증 장소 **싸이뮤직**(대전광역시 유성구 대학로155번길 29)의 중심 좌표에서 250m 이내이고 GPS 정확도가 100m 이내일 때 Firestore의 `checkins` 컬렉션에 방문 기록을 저장합니다.
@@ -21,7 +22,7 @@
 3. **Firestore Database**를 생성합니다. 리전은 운영 환경에 맞게 선택하세요.
 4. `index.html`에는 Firebase 프로젝트 `cygame-a7769`의 `firebaseConfig`가 적용되어 있습니다.
 5. Firestore의 **규칙** 탭에서 `firestore.rules` 내용을 붙여 넣고 게시합니다.
-6. `index.html`을 GitHub Pages, Firebase Hosting, Netlify, Vercel 등 HTTPS 호스팅에 올립니다. Firebase Authentication의 **승인된 도메인**에도 실제 배포 도메인을 추가합니다.
+6. `index.html`과 `attendance-462fd4ccd3596720fc00806a.html`을 GitHub Pages, Firebase Hosting, Netlify, Vercel 등 HTTPS 호스팅에 올립니다. Firebase Authentication의 **승인된 도메인**에도 실제 배포 도메인을 추가합니다.
 
 Firebase 웹 설정의 `apiKey`는 브라우저에서 사용하는 식별 설정값입니다. 보호는 키를 숨기는 방식이 아니라 Authentication, Firestore 보안 규칙, 필요하면 App Check로 구성해야 합니다.
 
@@ -32,6 +33,18 @@ Firebase 웹 설정의 `apiKey`는 브라우저에서 사용하는 식별 설정
 - Firebase 콘솔의 **Firestore Database → Data → checkins**에서 공용 기록을 확인합니다.
 - 문서 ID가 `Google UID_날짜` 형식이어서 같은 학교 Google 계정은 브라우저를 바꿔도 하루 한 번만 기록됩니다.
 - 개인 Gmail 및 다른 도메인의 Google 계정은 화면과 Firestore 보안 규칙 양쪽에서 차단됩니다.
+
+## 공유 출석조회 페이지
+
+배포된 사이트의 `attendance-462fd4ccd3596720fc00806a.html`로 접속하면 로그인 없이 출석 명단을 확인할 수 있습니다. 출석 페이지에는 이 주소가 표시되지 않으므로 부서장에게만 직접 공유하세요.
+
+- 기록은 Firestore의 `checkedAt` 기준 최신순으로 표시됩니다.
+- 화면에는 `인증시간`과 `이름`만 표시됩니다.
+- **CSV 내보내기**를 누르면 같은 두 열이 포함된 한글 Excel 호환 CSV가 다운로드됩니다.
+- 이 페이지는 비밀번호로 보호되지 않습니다. 링크를 전달받은 사람은 누구나 명단을 볼 수 있으므로 링크를 외부에 공개하지 마세요.
+- Firestore 규칙상 `checkins` 문서가 공개 읽기 상태가 되므로 이름·시간 외의 UID, 거리, GPS 정확도 등의 필드도 기술적으로 조회할 수 있습니다.
+
+GitHub Pages 주소가 `https://piuhal9000-glitch.github.io/Cygames_Attendance_check/`라면 공유 조회 주소는 `https://piuhal9000-glitch.github.io/Cygames_Attendance_check/attendance-462fd4ccd3596720fc00806a.html`입니다.
 
 ## 꼭 알아둘 점
 
